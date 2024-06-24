@@ -4,10 +4,6 @@ Query OK, 1 row affected (0.01 sec)
 
 mysql> use LMS;
 Database changed
-mysql> INSERT INTO Books (Title, Author, Category, Price, TotalCopies, AvailableCopies) VALUES ('The Wind on the Haunted Hill', 'Ruskin Bond', 'Fiction', 250, 5, 5),('How I taught my Grandmother to read','Sudha Murthy','Children\'s Book',370,10,10),('The Girl on the Train', 'Paula Hawkins', 'Fiction', 270, 12, 10);
-ERROR 1146 (42S02): Table 'lms.books' doesn't exist
-mysql> INSERT INTO Books (Title, Author, Category, Price, TotalCopies, AvailableCopies) VALUES ('The Wind on the Haunted Hill', 'Ruskin Bond', 'Fiction', 250, 5, 5),('How I taught my Grandmother to read','Sudha Murthy','Children\'s Book',370,10,10),('The Girl on the Train', 'Paula Hawkins', 'Fiction', 270, 12, 10);
-ERROR 1146 (42S02): Table 'lms.books' doesn't exist
 mysql> CREATE TABLE Books (BookID INT AUTO_INCREMENT PRIMARY KEY,Title VARCHAR(255) NOT NULL,Author VARCHAR(255),Category VARCHAR(100),Price DECIMAL(10, 2),TotalCopies INT,AvailableCopies INT);
 Query OK, 0 rows affected (0.03 sec)
 
