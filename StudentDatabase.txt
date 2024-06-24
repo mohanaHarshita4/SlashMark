@@ -1,0 +1,162 @@
+mysql> create database StudentDB;
+Query OK, 1 row affected (0.02 sec)
+
+mysql> use StudentDB;
+Database changed
+
+mysql> CREATE TABLE Departments (DepartmentID INT PRIMARY KEY AUTO_INCREMENT, DepartmentName VARCHAR(100) NOT NULL);
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> CREATE TABLE Students (StudentID INT PRIMARY KEY AUTO_INCREMENT, Name VARCHAR(100) NOT NULL, Address VARCHAR(255), DateOfBirth DATE, DepartmentID INT, FOREIGN KEY (DepartmentID) REFERENCES Departments(DepartmentID));
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> CREATE TABLE Attendance (AttendanceID INT PRIMARY KEY AUTO_INCREMENT, StudentID INT, AttendanceDate DATE, Status ENUM('Present', 'Absent', 'Late'), FOREIGN KEY (StudentID) REFERENCES Students(StudentID));
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> CREATE TABLE Performance (PerformanceID INT PRIMARY KEY AUTO_INCREMENT, StudentID INT,Subject VARCHAR(100),Marks INT, Grade VARCHAR(2),FOREIGN KEY (StudentID) REFERENCES Students(StudentID));
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> INSERT INTO Departments (DepartmentName) VALUES ('CSE'), ('CS-IT'), ('ECE'), ('ME');
+Query OK, 4 rows affected (0.01 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO Students (Name, Address, DateOfBirth, DepartmentID) VALUES ('Vivek', '12/24 Karol Bagh', '2002-05-15', 1),('Smith Patel', '456 Ila-Nagar', '2001-09-20', 2),('Lilly', 'Ila-Nagar', '2002-12-10', 3),('Pallavi', '123 SRT', '2002-02-10', 1),('Mohana', '176 HB nagar', '2002-10-04', 1),('Lalitha', 'Rd.2 Khar', '2002-01-07', 1);
+Query OK, 6 rows affected (0.01 sec)
+Records: 6  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO Attendance (StudentID, AttendanceDate, Status) VALUES (1, '2024-06-01', 'Present'),(2, '2024-06-01', 'Absent'),(3, '2024-06-01', 'Late'),(4,'2024-06-01','Present'),(5, '2024-06-01', 'Present'), (6, '2024-06-01', 'Present');
+Query OK, 6 rows affected (0.01 sec)
+Records: 6  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO Performance (StudentID, Subject, Marks, Grade) VALUES (1, 'Mathematics', 85, 'A'),(2, 'Computer Science', 75, 'B'),(3, 'Electrical Engineering', 90, 'A'),(4, 'Mathematics', 87, 'A'),(5, 'Mathematics', 90, 'A+'),(6, 'Mathematics', 100, 'A+');
+Query OK, 6 rows affected (0.01 sec)
+Records: 6  Duplicates: 0  Warnings: 0
+
+mysql> select * from Departments;
++--------------+----------------+
+| DepartmentID | DepartmentName |
++--------------+----------------+
+|            1 | CSE            |
+|            2 | CS-IT          |
+|            3 | ECE            |
+|            4 | ME             |
++--------------+----------------+
+4 rows in set (0.00 sec)
+
+mysql> select * from Students;
++-----------+-------------+------------------+-------------+--------------+
+| StudentID | Name        | Address          | DateOfBirth | DepartmentID |
++-----------+-------------+------------------+-------------+--------------+
+|         1 | Vivek       | 12/24 Karol Bagh | 2002-05-15  |            1 |
+|         2 | Smith Patel | 456 Ila-Nagar    | 2001-09-20  |            2 |
+|         3 | Lilly       | Ila-Nagar        | 2002-12-10  |            3 |
+|         4 | Pallavi     | 123 SRT          | 2002-02-10  |            1 |
+|         5 | Mohana      | 176 HB nagar     | 2002-10-04  |            1 |
+|         6 | Lalitha     | Rd.2 Khar        | 2002-01-07  |            1 |
++-----------+-------------+------------------+-------------+--------------+
+6 rows in set (0.00 sec)
+
+mysql> select * from Attendance;
++--------------+-----------+----------------+---------+
+| AttendanceID | StudentID | AttendanceDate | Status  |
++--------------+-----------+----------------+---------+
+|            1 |         1 | 2024-06-01     | Present |
+|            2 |         2 | 2024-06-01     | Absent  |
+|            3 |         3 | 2024-06-01     | Late    |
+|            4 |         4 | 2024-06-01     | Present |
+|            5 |         5 | 2024-06-01     | Present |
+|            6 |         6 | 2024-06-01     | Present |
++--------------+-----------+----------------+---------+
+6 rows in set (0.00 sec)
+
+mysql> select * from Performance;
++---------------+-----------+------------------------+-------+-------+
+| PerformanceID | StudentID | Subject                | Marks | Grade |
++---------------+-----------+------------------------+-------+-------+
+|             1 |         1 | Mathematics            |    85 | A     |
+|             2 |         2 | Computer Science       |    75 | B     |
+|             3 |         3 | Electrical Engineering |    90 | A     |
+|             4 |         4 | Mathematics            |    87 | A     |
+|             5 |         5 | Mathematics            |    90 | A+    |
+|             6 |         6 | Mathematics            |   100 | A+    |
++---------------+-----------+------------------------+-------+-------+
+6 rows in set (0.00 sec)
+
+mysql> SELECT Name, DateOfBirth, Address, DepartmentName FROM Students JOIN Departments ON Students.DepartmentID = Departments.DepartmentID WHERE StudentID = 1;
++-------+-------------+------------------+----------------+
+| Name  | DateOfBirth | Address          | DepartmentName |
++-------+-------------+------------------+----------------+
+| Vivek | 2002-05-15  | 12/24 Karol Bagh | CSE            |
++-------+-------------+------------------+----------------+
+1 row in set (0.00 sec)
+
+mysql> SELECT DepartmentName, COUNT(*) AS StudentCount FROM Students JOIN Departments ON Students.DepartmentID = Departments.DepartmentID GROUP BY DepartmentName;
++----------------+--------------+
+| DepartmentName | StudentCount |
++----------------+--------------+
+| CSE            |            4 |
+| CS-IT          |            1 |
+| ECE            |            1 |
++----------------+--------------+
+3 rows in set (0.00 sec)
+
+
+mysql> UPDATE Students SET DepartmentID = 4 WHERE Name = 'Vivek';
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from Students;
++-----------+-------------+------------------+-------------+--------------+
+| StudentID | Name        | Address          | DateOfBirth | DepartmentID |
++-----------+-------------+------------------+-------------+--------------+
+|         1 | Vivek       | 12/24 Karol Bagh | 2002-05-15  |            4 |
+|         2 | Smith Patel | 456 Ila-Nagar    | 2001-09-20  |            2 |
+|         3 | Lilly       | Ila-Nagar        | 2002-12-10  |            3 |
+|         4 | Pallavi     | 123 SRT          | 2002-02-10  |            1 |
+|         5 | Mohana      | 176 HB nagar     | 2002-10-04  |            1 |
+|         6 | Lalitha     | Rd.2 Khar        | 2002-01-07  |            1 |
++-----------+-------------+------------------+-------------+--------------+
+6 rows in set (0.00 sec)
+
+mysql> SELECT Students.Name, AVG(Performance.Marks) AS AverageMarks FROM Performance JOIN Students ON Performance.StudentID = Students.StudentID GROUP BY Students.Name;
++-------------+--------------+
+| Name        | AverageMarks |
++-------------+--------------+
+| Vivek       |      85.0000 |
+| Smith Patel |      75.0000 |
+| Lilly       |      90.0000 |
+| Pallavi     |      87.0000 |
+| Mohana      |      90.0000 |
+| Lalitha     |     100.0000 |
++-------------+--------------+
+6 rows in set (0.00 sec)
+
+mysql> SELECT * FROM Students WHERE DateOfBirth > '2002-06-01';
++-----------+--------+--------------+-------------+--------------+
+| StudentID | Name   | Address      | DateOfBirth | DepartmentID |
++-----------+--------+--------------+-------------+--------------+
+|         3 | Lilly  | Ila-Nagar    | 2002-12-10  |            3 |
+|         5 | Mohana | 176 HB nagar | 2002-10-04  |            1 |
++-----------+--------+--------------+-------------+--------------+
+2 rows in set (0.00 sec)
+
+mysql> SELECT * FROM Students WHERE DepartmentID =1;
++-----------+---------+--------------+-------------+--------------+
+| StudentID | Name    | Address      | DateOfBirth | DepartmentID |
++-----------+---------+--------------+-------------+--------------+
+|         4 | Pallavi | 123 SRT      | 2002-02-10  |            1 |
+|         5 | Mohana  | 176 HB nagar | 2002-10-04  |            1 |
+|         6 | Lalitha | Rd.2 Khar    | 2002-01-07  |            1 |
++-----------+---------+--------------+-------------+--------------+
+3 rows in set (0.00 sec)
+
+mysql> SELECT Students.Name FROM Students WHERE NOT EXISTS (SELECT * FROM Attendance WHERE Attendance.StudentID = Students.StudentID AND Attendance.Status <> 'Present');
++---------+
+| Name    |
++---------+
+| Vivek   |
+| Pallavi |
+| Mohana  |
+| Lalitha |
++---------+
+4 rows in set (0.00 sec)
