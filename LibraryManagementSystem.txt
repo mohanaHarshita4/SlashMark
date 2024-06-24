@@ -1,0 +1,167 @@
+mysql> create database LMS;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> use LMS;
+Database changed
+mysql> INSERT INTO Books (Title, Author, Category, Price, TotalCopies, AvailableCopies) VALUES ('The Wind on the Haunted Hill', 'Ruskin Bond', 'Fiction', 250, 5, 5),('How I taught my Grandmother to read','Sudha Murthy','Children\'s Book',370,10,10),('The Girl on the Train', 'Paula Hawkins', 'Fiction', 270, 12, 10);
+ERROR 1146 (42S02): Table 'lms.books' doesn't exist
+mysql> INSERT INTO Books (Title, Author, Category, Price, TotalCopies, AvailableCopies) VALUES ('The Wind on the Haunted Hill', 'Ruskin Bond', 'Fiction', 250, 5, 5),('How I taught my Grandmother to read','Sudha Murthy','Children\'s Book',370,10,10),('The Girl on the Train', 'Paula Hawkins', 'Fiction', 270, 12, 10);
+ERROR 1146 (42S02): Table 'lms.books' doesn't exist
+mysql> CREATE TABLE Books (BookID INT AUTO_INCREMENT PRIMARY KEY,Title VARCHAR(255) NOT NULL,Author VARCHAR(255),Category VARCHAR(100),Price DECIMAL(10, 2),TotalCopies INT,AvailableCopies INT);
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> CREATE TABLE Members (MemberID INT AUTO_INCREMENT PRIMARY KEY,Name VARCHAR(255) NOT NULL, Email VARCHAR(255), PhoneNumber VARCHAR(15), Address TEXT);
+Query OK, 0 rows affected (0.03 sec)
+
+mysql>  CREATE TABLE IssuedBooks (IssueID INT AUTO_INCREMENT PRIMARY KEY, BookID INT, MemberID INT, IssueDate DATE, ReturnDate DATE, FOREIGN KEY (BookID) REFERENCES Books(BookID), FOREIGN KEY (MemberID) REFERENCES Members(MemberID));
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> INSERT INTO Books (Title, Author, Category, Price, TotalCopies, AvailableCopies) VALUES ('The Wind on the Haunted Hill', 'Ruskin Bond', 'Fiction', 250, 5, 5),('How I taught my Grandmother to read','Sudha Murthy','Children\'s Book',370,10,10),('The Girl on the Train', 'Paula Hawkins', 'Fiction', 270, 12, 10);
+Query OK, 3 rows affected (0.01 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO Members (Name, Email, PhoneNumber, Address) VALUES ('Priya', 'Priya@gmail.com', '1234567890', '123 Main St, Springfield'),('Pooja', 'Pooja@gmail.com', '0987654321', '456 Elm St, Springfield');
+Query OK, 2 rows affected (0.01 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO IssuedBooks (BookID, MemberID, IssueDate, ReturnDate) VALUES (1, 1, '2024-06-20', '2024-07-20'),(2, 2, '2024-06-21', '2024-06-21');
+Query OK, 2 rows affected (0.01 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql> select * from Books;
++--------+-------------------------------------+---------------+-----------------+--------+-------------+-----------------+
+| BookID | Title                               | Author        | Category        | Price  | TotalCopies | AvailableCopies |
++--------+-------------------------------------+---------------+-----------------+--------+-------------+-----------------+
+|      1 | The Wind on the Haunted Hill        | Ruskin Bond   | Fiction         | 250.00 |           5 |
+5 |
+|      2 | How I taught my Grandmother to read | Sudha Murthy  | Children's Book | 370.00 |          10 |              10 |
+|      3 | The Girl on the Train               | Paula Hawkins | Fiction         | 270.00 |          12 |              10 |
++--------+-------------------------------------+---------------+-----------------+--------+-------------+-----------------+
+3 rows in set (0.00 sec)
+
+mysql> select * from Members;
++----------+-------+-----------------+-------------+--------------------------+
+| MemberID | Name  | Email           | PhoneNumber | Address                  |
++----------+-------+-----------------+-------------+--------------------------+
+|        1 | Priya | Priya@gmail.com | 1234567890  | 123 Main St, Springfield |
+|        2 | Pooja | Pooja@gmail.com | 0987654321  | 456 Elm St, Springfield  |
++----------+-------+-----------------+-------------+--------------------------+
+2 rows in set (0.00 sec)
+
+mysql> select * from IssuedMembers;
+ERROR 1146 (42S02): Table 'lms.issuedmembers' doesn't exist
+mysql> select * from IssuedBooks;
++---------+--------+----------+------------+------------+
+| IssueID | BookID | MemberID | IssueDate  | ReturnDate |
++---------+--------+----------+------------+------------+
+|       1 |      1 |        1 | 2024-06-20 | 2024-07-20 |
+|       2 |      2 |        2 | 2024-06-21 | 2024-06-21 |
++---------+--------+----------+------------+------------+
+2 rows in set (0.00 sec)
+
+mysql> UPDATE Books SET AvailableCopies = AvailableCopies - 1 WHERE BookID IN (1, 2);
+Query OK, 2 rows affected (0.01 sec)
+Rows matched: 2  Changed: 2  Warnings: 0
+
+mysql> select * from Books;
++--------+-------------------------------------+---------------+-----------------+--------+-------------+-----------------+
+| BookID | Title                               | Author        | Category        | Price  | TotalCopies | AvailableCopies |
++--------+-------------------------------------+---------------+-----------------+--------+-------------+-----------------+
+|      1 | The Wind on the Haunted Hill        | Ruskin Bond   | Fiction         | 250.00 |           5 |
+4 |
+|      2 | How I taught my Grandmother to read | Sudha Murthy  | Children's Book | 370.00 |          10 |
+9 |
+|      3 | The Girl on the Train               | Paula Hawkins | Fiction         | 270.00 |          12 |              10 |
++--------+-------------------------------------+---------------+-----------------+--------+-------------+-----------------+
+3 rows
+mysql> SELECT TotalCopies FROM Books WHERE Title = 'The Girl on the Train';
++-------------+
+| TotalCopies |
++-------------+
+|          12 |
++-------------+
+1 row in set (0.00 sec)
+
+mysql> UPDATE IssuedBooks SET ReturnDate = '2024-07-21' WHERE MemberID = 2 AND IssueDate = '2024-06-21';
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from IssuedBooks;
++---------+--------+----------+------------+------------+
+| IssueID | BookID | MemberID | IssueDate  | ReturnDate |
++---------+--------+----------+------------+------------+
+|       1 |      1 |        1 | 2024-06-20 | 2024-07-20 |
+|       2 |      2 |        2 | 2024-06-21 | 2024-07-21 |
++---------+--------+----------+------------+------------+
+2 rows in set (0.00 sec)
+
+mysql> INSERT INTO Members (Name, Email, PhoneNumber, Address) VALUES ('Siraj', 'siraj@gmail.com', '3456789012', '123 SRT Louis Area'),('Sohan', 'sohan@gmail.com', '8901234567', 'HNo 234 SRDIGI');
+Query OK, 2 rows affected (0.01 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql> select * from Members;
++----------+-------+-----------------+-------------+--------------------------+
+| MemberID | Name  | Email           | PhoneNumber | Address                  |
++----------+-------+-----------------+-------------+--------------------------+
+|        1 | Priya | Priya@gmail.com | 1234567890  | 123 Main St, Springfield |
+|        2 | Pooja | Pooja@gmail.com | 0987654321  | 456 Elm St, Springfield  |
+|        3 | Siraj | siraj@gmail.com | 3456789012  | 123 SRT Louis Area       |
+|        4 | Sohan | sohan@gmail.com | 8901234567  | HNo 234 SRDIGI           |
++----------+-------+-----------------+-------------+--------------------------+
+4 rows in set (0.00 sec)
+
+mysql> INSERT INTO IssuedBooks (BookID, MemberID, IssueDate, ReturnDate) VALUES (3, 3, '2024-06-27', '2024-07-07'),(3, 4, '2024-06-29', '2024-07-19');
+Query OK, 2 rows affected (0.01 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql> select * from IssuedBooks;
++---------+--------+----------+------------+------------+
+| IssueID | BookID | MemberID | IssueDate  | ReturnDate |
++---------+--------+----------+------------+------------+
+|       1 |      1 |        1 | 2024-06-20 | 2024-07-20 |
+|       2 |      2 |        2 | 2024-06-21 | 2024-07-21 |
+|       3 |      3 |        3 | 2024-06-27 | 2024-07-07 |
+|       4 |      3 |        4 | 2024-06-29 | 2024-07-19 |
++---------+--------+----------+------------+------------+
+4 rows in set (0.00 sec)
+
+mysql> SELECT COUNT(DISTINCT MemberID) AS NumberOfMembersReturned FROM IssuedBooks WHERE ReturnDate > '2024-07-01' AND ReturnDate < '2024-07-20';
++-------------------------+
+| NumberOfMembersReturned |
++-------------------------+
+|                       2 |
++-------------------------+
+1 row in set (0.00 sec)
+
+
+mysql> UPDATE Books SET Author = 'Ruskin Bond' WHERE Title = 'The Girl on the Train';
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> SELECT Title, TotalCopies FROM Books WHERE Author = 'Ruskin Bond';
++------------------------------+-------------+
+| Title                        | TotalCopies |
++------------------------------+-------------+
+| The Wind on the Haunted Hill |           5 |
+| The Girl on the Train        |          12 |
++------------------------------+-------------+
+2 rows in set (0.00 sec)
+
+mysql> SELECT * FROM Books WHERE Author = 'Ruskin Bond' AND Price > 250;
++--------+-----------------------+-------------+----------+--------+-------------+-----------------+
+| BookID | Title                 | Author      | Category | Price  | TotalCopies | AvailableCopies |
++--------+-----------------------+-------------+----------+--------+-------------+-----------------+
+|      3 | The Girl on the Train | Ruskin Bond | Fiction  | 270.00 |          12 |              10 |
++--------+-----------------------+-------------+----------+--------+-------------+-----------------+
+1 row in set (0.00 sec)
+
+mysql> SELECT DISTINCT m.* FROM Members m JOIN IssuedBooks ib ON m.MemberID = ib.MemberID;
++----------+-------+-----------------+-------------+--------------------------+
+| MemberID | Name  | Email           | PhoneNumber | Address                  |
++----------+-------+-----------------+-------------+--------------------------+
+|        1 | Priya | Priya@gmail.com | 1234567890  | 123 Main St, Springfield |
+|        2 | Pooja | Pooja@gmail.com | 0987654321  | 456 Elm St, Springfield  |
+|        3 | Siraj | siraj@gmail.com | 3456789012  | 123 SRT Louis Area       |
+|        4 | Sohan | sohan@gmail.com | 8901234567  | HNo 234 SRDIGI           |
++----------+-------+-----------------+-------------+--------------------------+
+4 rows in set (0.00 sec)
